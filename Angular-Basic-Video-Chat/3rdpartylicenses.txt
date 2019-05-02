@@ -1,4 +1,4 @@
-@opentok/client@2.15.9
+@opentok/client@2.16.0
 https://tokbox.com/support/sdk_license
 https://tokbox.com/support/sdk_license
 
