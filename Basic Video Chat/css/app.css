@@ -1,6 +1,7 @@
 body, html {
     background-color: gray;
     height: 100%;
+    margin: 0;
 }
 #videos {
     position: relative;
@@ -26,4 +27,32 @@ body, html {
     z-index: 100;
     border: 3px solid white;
     border-radius: 3px;
+}
+
+form {
+    border: 1px solid #ccc;
+    width: 400px;
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 20;
+    background-color: white;
+}
+
+form label {
+    margin: 5px;
+    display: inline-block;
+    text-align: right;
+    width: 100px;
+}
+
+form select {
+    width: 200px;
+}
+
+form button {
+    margin: 10px;
+    width: 100px;
 }

@@ -4,6 +4,51 @@ var apiKey;
 var sessionId;
 var token;
 
+const publisherOptions = {
+  insertMode: 'append',
+  width: '100%',
+  height: '100%'
+};
+
+const videoSelector = document.querySelector('#video-source-select');
+let publisher;
+let session;
+
+function populateDeviceSources(selector, kind) {
+  OT.getDevices((err, devices) => {
+    if (err) {
+      alert('getDevices error ' + err.message);
+      return;
+    }
+    let index = 0;
+    selector.innerHTML = devices.reduce((innerHTML, device) => {
+      if (device.kind === kind) {
+        index += 1;
+        return `${innerHTML}<option value="${device.deviceId}">${device.label || device.kind + index}</option>`;
+      }
+      return innerHTML;
+    }, '');
+  });
+}
+
+OT.getUserMedia().then((stream) => {
+  populateDeviceSources(videoSelector, 'videoInput');
+  stream.getTracks().forEach(track => track.stop());
+});
+
+videoSelector.addEventListener('change', () => {
+  session.unpublish(publisher);
+  const newPublisherOptions = { ...publisherOptions, videoSource: event.target.value };
+  publisher = OT.initPublisher('publisher', newPublisherOptions, (error) => {
+    if (error) {
+      handleError(error);
+      return;
+    }
+
+    session.publish(publisher, handleError);
+  });
+});
+
 function handleError(error) {
   if (error) {
     console.error(error);
@@ -11,7 +56,7 @@ function handleError(error) {
 }
 
 function initializeSession() {
-  var session = OT.initSession(apiKey, sessionId);
+  session = OT.initSession(apiKey, sessionId);
 
   // Subscribe to a newly created stream
   session.on('streamCreated', function streamCreated(event) {
@@ -27,13 +72,7 @@ function initializeSession() {
     console.log('You were disconnected from the session.', event.reason);
   });
 
-  // initialize the publisher
-  var publisherOptions = {
-    insertMode: 'append',
-    width: '100%',
-    height: '100%'
-  };
-  var publisher = OT.initPublisher('publisher', publisherOptions, handleError);
+  publisher = OT.initPublisher('publisher', publisherOptions, handleError);
 
   // Connect to the session
   session.connect(token, function callback(error) {
