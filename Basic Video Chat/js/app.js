@@ -5,6 +5,7 @@ var sessionId;
 var token;
 
 const publisherOptions = {
+  publishVideo: false,
   insertMode: 'append',
   width: '100%',
   height: '100%'
@@ -46,6 +47,7 @@ videoSelector.addEventListener('change', () => {
     }
 
     session.publish(publisher, handleError);
+    publisher.publishVideo(true);
   });
 });
 
@@ -81,6 +83,7 @@ function initializeSession() {
     } else {
       // If the connection is successful, publish the publisher to the session
       session.publish(publisher, handleError);
+      publisher.publishVideo(true);
     }
   });
 }
